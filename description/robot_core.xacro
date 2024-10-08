@@ -1,0 +1,239 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="inertial_macros.xacro"/>
+
+    <!-- define colors -->
+    <!-- rgba: red green blue transparency -->
+
+    <material name="blue">
+        <color rgba="0 0 0.8 1"/>
+    </material>
+
+    <material name="red">
+        <color rgba="0.8 0 0 1"/>
+    </material>
+
+    <material name="green">
+        <color rgba="0 0.8 0 1"/>
+    </material>
+
+    <material name="yellow">
+        <color rgba="1 1 0 1"/>
+    </material>
+
+    <material name="cyan">
+        <color rgba="0 1 1 1"/>
+    </material>
+
+    <!-- links: connected together with joints -->
+
+    <!-- joints -->
+    <!-- origin: defines position and orientation of joint relative to parent link -->
+    <!-- axis: defines axis of rotation -->
+    <!-- limit: defines limits for joint's motion -->
+
+    <!-- world link to connect robot to the world -->
+    <link name="world"/>
+
+    <!-- fixed_joint: fixed to connect base_link to world -->
+    <joint name="fixed_joint" type="fixed">
+        <!--rpy: roll pitch yaw -->
+        <!-- xyz: coordinate displacement -->
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <parent link="world"/>
+        <child link="base_link"/>
+    </joint>
+
+    <!-- base_link of manipulator -->
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <cylinder length="0.2" radius="0.4"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <material name="green"/>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.2" radius="0.4"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+        </collision>
+        <xacro:inertial_cylinder mass="1.5" length="0.2" radius="0.4">
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <!-- joint_1: axial revolute to connect base to link_1 -->
+    <joint name="joint_1" type="revolute">
+        <parent link="base_link"/>
+        <child link="link_1"/>
+        <origin rpy="0 0 0" xyz="0 0 0.1"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="300" velocity="2.0" lower="-3.141593" upper="3.141593"/>
+    </joint>
+
+    <!-- link_1 of manipulator -->
+    <link name="link_1">
+        <visual>
+            <geometry>
+                <cylinder length="0.6" radius="0.15"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.3"/>
+            <material name="yellow"/>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.6" radius="0.15"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.3"/>
+        </collision>
+        <xacro:inertial_cylinder mass="1.0" length="0.6" radius="0.15">
+            <origin rpy="0 0 0" xyz="0 0 0.3"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <!-- joint_2: transverse revolute to connect link_1 to link_2 -->
+    <joint name="joint_2" type="revolute">
+        <parent link="link_1"/>
+        <child link="link_2"/>
+        <origin rpy="0 -1.570796 0" xyz="-0.15 0 0.5"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="300" velocity="2.0" lower="-3.141593" upper="3.141593"/>
+    </joint>
+
+    <!-- link_2 of manipulator -->
+    <link name="link_2">
+        <visual>
+            <geometry>
+                <cylinder length="1" radius="0.1"/>
+            </geometry>
+            <origin rpy="0 1.570796 0" xyz="0.3 0 0.1"/>
+            <material name="red"/>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="1" radius="0.1"/>
+            </geometry>
+            <origin rpy="0 1.570796 0" xyz="0.3 0 0.1"/>
+        </collision>
+        <xacro:inertial_cylinder mass="0.4" length="1" radius="0.1">
+            <origin rpy="0 1.570796 0" xyz="0.3 0 0.1"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <!-- joint_3: transverse revolute to connect link_2 to link_3 -->
+    <joint name="joint_3" type="revolute">
+        <parent link="link_2"/>
+        <child link="link_3"/>
+        <origin rpy="0 0 0" xyz="0.7 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="300" velocity="2.0" lower="-3.141593" upper="3.141593"/>
+    </joint>
+
+    <!-- link_3 of manipulator -->
+    <link name="link_3">
+        <visual>
+            <geometry>
+                <cylinder length="1" radius="0.1"/>
+            </geometry>
+            <origin rpy="0 1.570796 0" xyz="0.4 0 -0.1"/>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="1" radius="0.1"/>
+            </geometry>
+            <origin rpy="0 1.570796 0" xyz="0.4 0 -0.1"/>
+        </collision>
+        <xacro:inertial_cylinder mass="0.4" length="1" radius="0.1">
+            <origin rpy="0 1.570796 0" xyz="0.4 0 -0.1"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <!-- joint_4: axial revolute to connect link_3 to end effector -->
+    <joint name="joint_4" type="revolute">
+        <parent link="link_3"/>
+        <child link="link_4"/>
+        <origin rpy="-1.570796 0 0" xyz="1 0 -0.1"/>
+        <axis xyz="0 0 1"/>
+        <limit effort="300" velocity="2.0" lower="-3.141593" upper="3.141593"/>
+    </joint>
+
+    <!-- link_4 of manipulator (end effector) -->
+    <link name="link_4">
+        <visual>
+            <geometry>
+                <cylinder length="0.2" radius="0.1"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.1"/>
+            <material name="cyan"/>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.2" radius="0.1"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.1"/>
+        </collision>
+        <xacro:inertial_cylinder mass="0.2" length="0.2" radius="0.1">
+            <origin rpy="0 0 0" xyz="0 0 0.1"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <!-- joint_5: prismatic moves manipulator's finger (link_5) -->
+    <joint name="joint_5" type="prismatic">
+        <parent link="link_4"/>
+        <child link="link_5"/>
+        <origin rpy="0 0 0" xyz="0.08 0 0.2"/>
+        <axis xyz="1 0 0"/>
+        <limit effort="300" velocity="2.0" lower="-0.12" upper="0"/>
+    </joint>
+
+    <!-- link_5 of manipulator (finger 1) -->
+    <link name="link_5">
+        <visual>
+            <geometry>
+                <box size="0.03 0.06 0.15"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.075"/>
+            <material name="green"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.03 0.06 0.15"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.075"/>
+        </collision>
+        <xacro:inertial_box mass="0.05" x="0.03" y="0.06" z="0.15">
+            <origin rpy="0 0 0" xyz="0 0 0.075"/>
+        </xacro:inertial_box>
+    </link>
+
+    <!-- joint_6: fixed to connect link_6 to link_4 -->
+    <joint name="joint_6" type="fixed">
+        <parent link="link_4"/>
+        <child link="link_6"/>
+        <origin rpy="0 0 0" xyz="-0.08 0 0.2"/>
+    </joint>
+
+    <!-- link_6 of manipulator (finger 2) -->
+    <link name="link_6">
+        <visual>
+            <geometry>
+                <box size="0.03 0.06 0.15"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.075"/>
+            <material name="green"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.03 0.06 0.15"/>
+            </geometry>
+            <origin rpy="0 0 0" xyz="0 0 0.075"/>
+        </collision>
+        <xacro:inertial_box mass="0.05" x="0.03" y="0.06" z="0.15">
+            <origin rpy="0 0 0" xyz="0 0 0.075"/>
+        </xacro:inertial_box>
+    </link>
+</robot> 
